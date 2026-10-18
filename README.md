@@ -140,7 +140,11 @@ Esta é a primeira versão publicada. Os passos abaixo ocorreram antes do versio
 - Reaplicação na sessão real com registro `OK Vermelho e preto`.
 - Execução manual da tarefa permanente com **resultado `0`**, três gatilhos e ação apontando para `Reaplicar.ps1`.
 
-### Aguardando teste físico do usuário
+### Feedback do usuário — 18/10/2026
+
+O usuário confirmou: **“testei e funcionou”**, em retorno ao pedido de testar a continuidade da configuração após ligar ou retomar o PC. Essa é uma confirmação de funcionamento no uso real, relatada pelo usuário; não é um teste realizado pelo agente. Não foram especificados a cor nem os ciclos executados, portanto a confirmação não equivale a validar individualmente todos os cenários abaixo. Nenhuma alteração de código foi necessária após esse feedback.
+
+### Cenários sem confirmação individual
 
 - Desligar completamente, ligar novamente e entrar na conta.
 - Reiniciar e entrar na conta.
@@ -148,7 +152,7 @@ Esta é a primeira versão publicada. Os passos abaixo ocorreram antes do versio
 - Trocar a cor pelo seletor e repetir os testes com a nova cor.
 - Confirmar a percepção visual e o comportamento em aplicativos e escalas de tela usados no dia a dia.
 
-**Esses ciclos físicos não foram realizados durante a instalação assistida.** O resultado `0` comprova a execução manual da tarefa, não comprova por si só o disparo de cada gatilho em todas as situações. O usuário enviará feedback; problemas reproduzidos serão corrigidos e registrados em uma nova versão.
+**Esses ciclos físicos não foram realizados durante a instalação assistida.** O resultado `0` comprova a execução manual da tarefa, não comprova por si só o disparo de cada gatilho em todas as situações. O feedback positivo de 18/10/2026 está registrado acima; eventuais novos problemas reproduzidos serão corrigidos e registrados em uma nova versão.
 
 ## Arquivos e responsabilidades
 
