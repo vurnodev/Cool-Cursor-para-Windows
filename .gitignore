@@ -1,0 +1,10 @@
+__pycache__/
+*.py[cod]
+.venv/
+cursores-anteriores.json
+preferencia-tema-anterior.json
+tema-selecionado.txt
+ultima-reaplicacao.txt
+*.lnk
+implantacao*/
+implantacao*.zip

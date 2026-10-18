@@ -1,0 +1,39 @@
+PONTA SUAVE — pacote original de cursores Windows
+
+7 temas: Azul pervinca, Branco, Laranja, Menta, Violeta,
+Vermelho e preto, Preto e vermelho.
+17 estados por tema. CUR em 32/48/64/96 px, com transparência e
+ponto de clique próprio. Espera e trabalho em segundo plano: ANI
+com 12 quadros, 12 fps. O ponto de clique fica na ponta do desenho.
+
+Para instalar e escolher cor: abra Escolher-tema.cmd.
+O seletor visual permite escolher na lista e clicar em Aplicar cor.
+Para voltar ao estado anterior à primeira instalação: Restaurar.cmd.
+A instalação é para o usuário atual, em %LOCALAPPDATA%\PontaSuave.
+O backup original é preservado entre as trocas de tema.
+
+PERSISTENCIA
+O esquema escolhido fica salvo no Windows e os temas visuais deixam de
+substituir os cursores. Uma tarefa do usuario reaplica a ultima cor ao
+entrar na conta, desbloquear e retornar da suspensao, inclusive na bateria.
+Nao ha processo permanente em segundo plano. Restaurar.cmd remove essa
+tarefa e restaura tambem a preferencia anterior de troca pelo tema.
+
+A prévia PNG mostra os arquivos efetivamente gerados. A ilustração
+conceitual foi redesenhada em geometria paramétrica para nitidez em
+tamanhos pequenos: não é um recorte da imagem de apresentação.
+Aplicativos que desenham cursores próprios podem ignorar o tema do Windows.
+
+PERSONALIZAÇÃO
+As sete cores prontas são selecionadas por Escolher-tema.cmd.
+gerar.py é a fonte original e permite gerar outras cores (Python + Pillow):
+python gerar.py --cor "#E51D36" --borda "#151518" --nome "Minha cor"
+Temas adicionais são exportados para a pasta temas; o seletor fornecido
+cobre as sete cores originais. Não há troca de cor em tempo real pelo Windows.
+
+VALIDAÇÃO
+python verify.py verifica estrutura, tamanhos e pontos de clique.
+powershell -File Instalar.ps1 -Validar testa todos os arquivos com
+LoadCursorFromFile, a API nativa do Windows.
+
+Arte e geração criadas para este pedido. Sem cursores de terceiros.
