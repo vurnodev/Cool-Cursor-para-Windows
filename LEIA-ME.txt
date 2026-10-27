@@ -18,6 +18,9 @@ substituir os cursores. Uma tarefa do usuario reaplica a ultima cor ao
 entrar na conta, desbloquear e retornar da suspensao, inclusive na bateria.
 Nao ha processo permanente em segundo plano. Restaurar.cmd remove essa
 tarefa e restaura tambem a preferencia anterior de troca pelo tema.
+Desde 1.0.1, a tarefa inicia ReaplicarSilencioso.exe (sem console),
+que abre o PowerShell sem criar janela. O fonte C# e o script de
+compilacao acompanham o repositorio. O seletor manual continua visivel.
 
 A prévia PNG mostra os arquivos efetivamente gerados. A ilustração
 conceitual foi redesenhada em geometria paramétrica para nitidez em

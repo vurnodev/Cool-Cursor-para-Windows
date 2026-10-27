@@ -18,6 +18,8 @@ if($Restaurar){
  Remove-Item -LiteralPath (Join-Path $root 'tema-selecionado.txt') -ErrorAction SilentlyContinue
  return
 }
+$launcher=Join-Path $root 'ReaplicarSilencioso.exe'
+if(!(Test-Path -LiteralPath $launcher)){throw 'Lancador sem console ausente. Reinstale o pacote completo.'}
 if(!(Test-Path -LiteralPath $backup)){
  $key=Get-Item -LiteralPath $themeKey
  [pscustomobject]@{Exists=($key.GetValueNames() -contains 'ThemeChangesMousePointers');Value=$key.GetValue('ThemeChangesMousePointers')} | ConvertTo-Json | Set-Content -LiteralPath $backup -Encoding UTF8
@@ -50,7 +52,7 @@ $resume=$task.Triggers.Create(0)
 $resume.Subscription='<QueryList><Query Id="0" Path="System"><Select Path="System">*[System[(Provider[@Name="Microsoft-Windows-Power-Troubleshooter"] and EventID=1) or (Provider[@Name="Microsoft-Windows-Kernel-Power"] and EventID=107)]]</Select></Query></QueryList>'
 $resume.Delay='PT3S'
 $action=$task.Actions.Create(0)
-$action.Path=Join-Path $env:SystemRoot 'System32\WindowsPowerShell\v1.0\powershell.exe'
-$action.Arguments='-NoProfile -ExecutionPolicy Bypass -WindowStyle Hidden -File "'+(Join-Path $root 'Reaplicar.ps1')+'"'
+$action.Path=$launcher
+$action.Arguments=''
 [void]$folder.RegisterTaskDefinition($taskName,$task,6,$sid,$null,3,$null)
 Write-Output 'Persistencia configurada: entrada, desbloqueio e retorno da suspensao.'

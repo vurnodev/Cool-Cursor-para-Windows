@@ -59,7 +59,7 @@ if($Restaurar){
 }
 New-Item -ItemType Directory -Path $dest -Force | Out-Null
 if([IO.Path]::GetFullPath($PSScriptRoot) -ne [IO.Path]::GetFullPath($dest)){
- foreach($name in @('temas','Instalar.ps1','Persistencia.ps1','Reaplicar.ps1','Selecionar-cor.ps1','Escolher-tema.cmd','Restaurar.cmd','LEIA-ME.txt','Previa-7-temas.png','cores.json')){
+ foreach($name in @('temas','Instalar.ps1','Persistencia.ps1','Reaplicar.ps1','ReaplicarSilencioso.exe','Selecionar-cor.ps1','Escolher-tema.cmd','Restaurar.cmd','LEIA-ME.txt','Previa-7-temas.png','cores.json')){
   Copy-Item -LiteralPath (Join-Path $PSScriptRoot $name) -Destination $dest -Recurse -Force
  }
 }

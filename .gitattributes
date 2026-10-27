@@ -5,3 +5,5 @@
 *.cur binary
 *.ani binary
 *.png binary
+*.exe binary
+*.cs text eol=crlf

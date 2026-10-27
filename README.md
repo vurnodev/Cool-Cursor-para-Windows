@@ -1,6 +1,6 @@
 # Cool Cursor para Windows
 
-**Versão 1.0.0 — 17/10/2026.** Pacote de cursores **Ponta suave**, com sete variações de cor, seleção visual e reaplicação automática da configuração no Windows.
+**Versão 1.0.1 — 27/10/2026.** Pacote de cursores **Ponta suave**, com sete variações de cor, seleção visual e reaplicação automática sem console no Windows.
 
 ![Prévia dos sete temas, renderizada com os arquivos reais](Previa-7-temas.png)
 
@@ -94,6 +94,8 @@ Os atrasos são os configurados, não uma garantia de prazo exato: o Agendador e
 
 A tarefa permite execução na bateria, ignora instâncias concorrentes e tem limite de execução de um minuto. Não existe processo permanente monitorando o sistema. Os gatilhos disponíveis dependem do comportamento do Windows e do hardware; por isso o teste físico do usuário ainda é necessário.
 
+A partir de **1.0.1**, a ação da tarefa inicia diretamente `ReaplicarSilencioso.exe`, compilado como aplicativo Windows sem console. Ele abre o PowerShell com `UseShellExecute = false` e `CreateNoWindow = true`, aguardando a conclusão e devolvendo seu código de saída. A janela não é criada para depois ser escondida. A opção `Hidden` da própria tarefa não controla janelas de processos; apenas essa opção e `-WindowStyle Hidden` na versão anterior não evitavam o lampejo na abertura do PowerShell. O seletor de cores continua visível quando aberto intencionalmente pelo usuário.
+
 A última reaplicação grava data, resultado e nome da cor em `%LOCALAPPDATA%\PontaSuave\ultima-reaplicacao.txt`. O nome da tarefa é `PontaSuave-Persistencia-<SID do usuário>`.
 
 ### Melhoria em relação ao comportamento inicial
@@ -126,6 +128,26 @@ Esta é a primeira versão publicada. Os passos abaixo ocorreram antes do versio
 13. **Correção do diretório da tarefa:** removida a dependência de um diretório de trabalho personalizado, após o erro `0x8007010B` no teste; os scripts usam caminhos absolutos e `$PSScriptRoot`.
 14. **Verificação da tarefa real:** confirmação de que o Windows encontrou os 119 arquivos, execução de `Reaplicar.ps1` com registro `OK` e resultado `0` da tarefa principal. A tarefa temporária de diagnóstico foi removida.
 15. **Publicação:** organização do código, artefatos, dependência de geração, exclusões de arquivos pessoais, documentação e identificação da versão inicial.
+
+## Correção 1.0.1 — execução sem janela, 27/10/2026
+
+**Relato:** ao retornar à sessão, uma janela de prompt aparecia rapidamente durante a reaplicação, embora os cursores permanecessem configurados.
+
+**Causa:** a ação da tarefa iniciava um executável de console (`powershell.exe`) diretamente. A opção `-WindowStyle Hidden` era interpretada após a inicialização, permitindo a aparição momentânea do console. Marcar a tarefa como oculta não elimina esse console.
+
+**Alterações:**
+
+- Adicionado `ReaplicarSilencioso.cs`, com código-fonte do iniciador, e `ReaplicarSilencioso.exe`, compilado como Windows GUI (`/target:winexe`), sem janela própria.
+- O processo filho usa `CreateNoWindow = true` e `UseShellExecute = false`; não depende de iniciar um console e escondê-lo depois. [Documentação da Microsoft](https://learn.microsoft.com/en-us/dotnet/api/system.diagnostics.processstartinfo.createnowindow).
+- O iniciador espera a conclusão do PowerShell e retorna o mesmo código de saída, mantendo o resultado da tarefa confiável. Falhas de inicialização são gravadas em `ultima-reaplicacao.txt`, sem abrir caixas de diálogo.
+- `Persistencia.ps1` passou a apontar a ação diretamente para o iniciador e valida sua presença antes de modificar a configuração de persistência.
+- `Instalar.ps1` passou a copiar o executável junto ao pacote, inclusive em reinstalações e mudanças de cor.
+- Adicionados `Compilar-lancador.ps1` e `verify_silencioso.py`, para compilação e testes reproduzíveis.
+- Mantidos a última cor escolhida, os três gatilhos, os backups e a restauração. Não foi adicionado processo residente nem solicitação de privilégios máximos.
+
+**Teste automatizado:** executado em uma pasta temporária com espaços no caminho, sem alterar os cursores. Confirma subsistema PE Windows GUI, erro silencioso quando o script não existe, propagação do código de saída do filho e `GetConsoleWindow() = 0` dentro do PowerShell iniciado. A validação perceptiva após o próximo retorno da sessão depende do feedback do usuário.
+
+**Instalação real:** atualização aplicada preservando o tema vermelho e preto. A ação instalada passou a apontar para `ReaplicarSilencioso.exe`; os três gatilhos foram mantidos. A execução da tarefa principal terminou com resultado `0`, e a tarefa temporária de atualização foi removida. Não foi provocado um ciclo físico de suspensão ou reinicialização neste teste.
 
 ## Validações e feedback pendente
 
@@ -166,6 +188,10 @@ O usuário confirmou: **“testei e funcionou”**, em retorno ao pedido de test
 | `Escolher-tema.cmd` | Inicialização do seletor visual. |
 | `Persistencia.ps1` | Esquema nomeado, preferência de tema, seleção salva e tarefa de reaplicação. |
 | `Reaplicar.ps1` | Releitura da escolha salva, aplicação sem recriar a tarefa e gravação do resultado. |
+| `ReaplicarSilencioso.exe` | Entrada sem console da tarefa de reaplicação. |
+| `ReaplicarSilencioso.cs` | Fonte C# do iniciador, com execução do filho sem criar console. |
+| `Compilar-lancador.ps1` | Compilação do iniciador com o compilador do .NET Framework. |
+| `verify_silencioso.py` | Testes isolados do iniciador e da ausência de console no filho. |
 | `Restaurar.cmd` | Entrada de restauração da configuração anterior. |
 | `verify.py` | Verificação estrutural dos cursores fornecidos. |
 | `Previa-7-temas.png` | Prévia dos desenhos reais do pacote. |
@@ -184,6 +210,15 @@ python verify.py
 powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\Instalar.ps1 -Validar
 ```
 
+Para recompilar e testar o iniciador sem console no Windows, com .NET Framework e seu compilador C# disponíveis:
+
+```powershell
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\Compilar-lancador.ps1
+python verify_silencioso.py
+```
+
+O executável já vem pronto no pacote; usuários finais não precisam compilar. As assinaturas digitais e o comportamento das políticas de segurança dependem do ambiente: o iniciador fornecido não possui assinatura digital.
+
 Para exportar outra combinação de cores:
 
 ```powershell
@@ -194,4 +229,4 @@ A exportação personalizada não adiciona automaticamente a cor ao seletor: o s
 
 ## Versionamento
 
-A publicação inicial consolidada usa a tag **`v1.0.0`**. Ajustes posteriores terão novos commits e tags, sem alterar retroativamente os resultados e limitações registrados acima. Novos relatos devem informar a cor selecionada, a situação testada e, se disponível, o conteúdo de `ultima-reaplicacao.txt`, sem compartilhar os backups pessoais.
+A publicação inicial consolidada usa a tag **`v1.0.0`**; a correção de execução sem console usa **`v1.0.1`**. Ajustes posteriores terão novos commits e tags, sem alterar retroativamente os resultados e limitações registrados acima. Novos relatos devem informar a cor selecionada, a situação testada e, se disponível, o conteúdo de `ultima-reaplicacao.txt`, sem compartilhar os backups pessoais.
