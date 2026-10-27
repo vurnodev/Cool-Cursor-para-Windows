@@ -145,7 +145,9 @@ Esta é a primeira versão publicada. Os passos abaixo ocorreram antes do versio
 - Adicionados `Compilar-lancador.ps1` e `verify_silencioso.py`, para compilação e testes reproduzíveis.
 - Mantidos a última cor escolhida, os três gatilhos, os backups e a restauração. Não foi adicionado processo residente nem solicitação de privilégios máximos.
 
-**Teste automatizado:** executado em uma pasta temporária com espaços no caminho, sem alterar os cursores. Confirma subsistema PE Windows GUI, erro silencioso quando o script não existe, propagação do código de saída do filho e `GetConsoleWindow() = 0` dentro do PowerShell iniciado. A validação perceptiva após o próximo retorno da sessão depende do feedback do usuário.
+**Teste automatizado:** executado em uma pasta temporária com espaços no caminho, sem alterar os cursores. Confirma subsistema PE Windows GUI, erro silencioso quando o script não existe, propagação do código de saída do filho e `GetConsoleWindow() = 0` dentro do PowerShell iniciado.
+
+**Confirmação do usuário — 27/10/2026:** após a instalação da correção, o usuário confirmou **“desapareceu sim”**, em resposta à verificação do lampejo da janela de prompt. A ausência da janela foi confirmada no uso real relatado pelo usuário. Não foi necessário novo ajuste de código; o relato não especifica o tipo de retomada realizado nem valida individualmente todos os gatilhos.
 
 **Instalação real:** atualização aplicada preservando o tema vermelho e preto. A ação instalada passou a apontar para `ReaplicarSilencioso.exe`; os três gatilhos foram mantidos. A execução da tarefa principal terminou com resultado `0`, e a tarefa temporária de atualização foi removida. Não foi provocado um ciclo físico de suspensão ou reinicialização neste teste.
 
